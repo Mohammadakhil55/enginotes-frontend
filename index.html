@@ -346,7 +346,7 @@ let allNotes = [];
 
 async function fetchNotes(retry = 0) {
   try {
-    const res = await fetch("https://enginotes-backend.onrender.com/notes");
+    const res = await fetch("https://enginotes-backend.onrender.com/api/notes");
 
     if (!res.ok) throw new Error();
 
@@ -363,6 +363,7 @@ async function fetchNotes(retry = 0) {
 }
 
 function render() {
+  let shown = 0;
   const text = headerSearchInput.value.toLowerCase();
 
   const filtered = allNotes.filter(n => {
@@ -392,8 +393,8 @@ function render() {
       <h3>${n.subject || "Untitled Note"}</h3>
       <p>${n.branch} • Sem ${n.semester}</p>
 
-      <button onclick="openNote('${n.link}','${n._id}')">
-        Open
+      <button onclick="viewNote('${n._id}')">        
+       View Notes
       </button>
 
       <p class="small">⬇ ${n.downloads || 0}</p>
@@ -430,6 +431,9 @@ async function openNote(link, id) {
   if(confirm("Open this file from Google Drive?")){
     window.open(link, "_blank", "noopener,noreferrer");
   }
+}
+function viewNote(id){
+  window.location.href = "note.html?id=" + id;
 }
 </script>
 

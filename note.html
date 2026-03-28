@@ -47,7 +47,7 @@ const id = new URLSearchParams(location.search).get("id");
 if (!id) {
   noteEl.innerHTML = "<p>Invalid note link</p>";
 } else {
-  fetch("http://localhost:5000/note/" + id)
+  fetch("https://enginotes-backend.onrender.com/note/" + id)
     .then(res => res.json())
     .then(n => {
 
@@ -83,7 +83,7 @@ if (!id) {
 // 🔥 open with tracking
 function openNote(link, id){
 
-  fetch("http://localhost:5000/download/" + id, {
+  fetch("https://enginotes-backend.onrender.com/download/" + id, {
     method: "POST"
   });
 
