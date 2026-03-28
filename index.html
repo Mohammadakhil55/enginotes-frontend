@@ -344,15 +344,21 @@ const headerSearchInput = document.getElementById("headerSearchInput");
 
 let allNotes = [];
 
-async function fetchNotes() {
-  notesEl.innerHTML = "<p>Loading notes...</p>";
-
+async function fetchNotes(retry = 0) {
   try {
     const res = await fetch("https://enginotes-backend.onrender.com/notes");
+
+    if (!res.ok) throw new Error();
+
     allNotes = await res.json();
     render();
-  } catch (err) {
-    notesEl.innerHTML = "<p>Server error. Please try again later.</p>";
+
+  } catch {
+    if (retry < 3) {
+      setTimeout(() => fetchNotes(retry + 1), 5000);
+    } else {
+      notesEl.innerHTML = "<p>Server busy. Try again later.</p>";
+    }
   }
 }
 
