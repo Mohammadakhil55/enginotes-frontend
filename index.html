@@ -344,6 +344,8 @@ const semFilter = document.getElementById("semFilter");
 const headerSearchInput = document.getElementById("headerSearchInput");
 
 let allNotes = [];
+let currentPage = 1;
+const notesPerPage = 6;
 
 async function fetchNotes(retry = 0) {
   try {
@@ -382,7 +384,10 @@ function render() {
     return;
   }
 
- filtered.forEach(n => {
+ const start = (currentPage - 1) * notesPerPage;
+const paginatedNotes = filtered.slice(start, start + notesPerPage);
+
+paginatedNotes.forEach(n => {
 
   // 🔒 SAFETY CHECK (VERY IMPORTANT)
   if (!n.link || !n.link.startsWith("https://drive.google.com/")) {
@@ -404,14 +409,49 @@ function render() {
 });
 if (shown === 0) {
   notesEl.innerHTML = "<p>No valid notes available</p>";
+  const totalPages = Math.ceil(filtered.length / notesPerPage);
+document.getElementById("pageNumber").innerText = `Page ${currentPage} / ${totalPages}`;
 }
 }
 
-branchFilter.addEventListener("change", render);
-semFilter.addEventListener("change", render);
-headerSearchInput.addEventListener("input", render);
+branchFilter.addEventListener("change", () => {
+  currentPage = 1;
+  render();
+});
+
+semFilter.addEventListener("change", () => {
+  currentPage = 1;
+  render();
+});
+
+headerSearchInput.addEventListener("input", () => {
+  currentPage = 1;
+  render();
+});
 
 fetchNotes();
+</script>
+<script>
+// 👇 ADD HERE (STEP 4)
+
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+
+prevBtn.onclick = () => {
+  if (currentPage > 1) {
+    currentPage--;
+    render();
+  }
+};
+
+nextBtn.onclick = () => {
+  const totalPages = Math.ceil(allNotes.length / notesPerPage);
+  if (currentPage < totalPages) {
+    currentPage++;
+    render();
+  }
+};
+
 </script>
 <script>
 async function openNote(link, id) {
