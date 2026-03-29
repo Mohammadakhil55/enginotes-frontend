@@ -409,9 +409,15 @@ paginatedNotes.forEach(n => {
 });
 if (shown === 0) {
   notesEl.innerHTML = "<p>No valid notes available</p>";
-  const totalPages = Math.ceil(filtered.length / notesPerPage);
-document.getElementById("pageNumber").innerText = `Page ${currentPage} / ${totalPages}`;
 }
+const totalPages = Math.ceil(filtered.length / notesPerPage);
+if (currentPage > totalPages) {
+  currentPage = totalPages || 1;
+}
+document.getElementById("pageNumber").innerText =
+  `Page ${currentPage} / ${totalPages}`;
+  prevBtn.disabled = currentPage === 1;
+  nextBtn.disabled = currentPage === totalPages;
 }
 
 branchFilter.addEventListener("change", () => {
@@ -445,7 +451,19 @@ prevBtn.onclick = () => {
 };
 
 nextBtn.onclick = () => {
-  const totalPages = Math.ceil(allNotes.length / notesPerPage);
+
+  const text = headerSearchInput.value.toLowerCase();
+
+  const filtered = allNotes.filter(n => {
+    return (
+      (!branchFilter.value || n.branch === branchFilter.value) &&
+      (!semFilter.value || n.semester == semFilter.value) &&
+      (!text || (n.subject || "").toLowerCase().includes(text))
+    );
+  });
+
+  const totalPages = Math.ceil(filtered.length / notesPerPage);
+
   if (currentPage < totalPages) {
     currentPage++;
     render();
