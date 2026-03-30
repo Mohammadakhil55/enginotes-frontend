@@ -175,13 +175,12 @@ async function upload() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": token
+        "Authorization": "Bearer " + token
       },
       body: JSON.stringify({
         branch: branch.value,
         semester: Number(semester.value),
         subject: subject.value.trim(),
-
         link: userLink
       })
     });
