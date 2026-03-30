@@ -189,7 +189,8 @@ async function upload() {
     const msg = await res.text();
 
     if (!res.ok) {
-      alert("No " + msg);
+      console.error(msg);
+      alert(msg);
       resetBtn();
       return;
     }
@@ -198,10 +199,12 @@ async function upload() {
 
     subject.value = "";
     link.value = "";
+
     location.href = "index.html";
 
   } catch (err) {
-    alert("Upload failed");
+    console.error(err);
+    alert(err.message || "Upload failed");
     resetBtn();
   }
 
