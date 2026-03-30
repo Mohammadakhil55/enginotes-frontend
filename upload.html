@@ -112,7 +112,6 @@ button:hover{
   </select>
 
   <input id="subject" placeholder="Subject name (eg: Python)">
-  <input id="unit" placeholder="Unit / Module">
   <input id="link" placeholder="Google Drive link">
 
   <p class="hint">Make sure the Drive link is public</p>
@@ -142,7 +141,6 @@ async function upload() {
     !branch.value ||
     !semester.value ||
     !subject.value.trim() ||
-    !unit.value.trim() ||
     !userLink
   ) {
     alert("Please fill all fields");
@@ -183,6 +181,7 @@ async function upload() {
         branch: branch.value,
         semester: Number(semester.value),
         subject: subject.value.trim(),
+
         link: userLink
       })
     });
@@ -198,9 +197,7 @@ async function upload() {
     alert("Ok " + msg);
 
     subject.value = "";
-    unit.value = "";
     link.value = "";
-
     location.href = "index.html";
 
   } catch (err) {
