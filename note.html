@@ -1,9 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EngiNotes</title>
+
+<title id="pageTitle">Loading...</title>
+
+<meta name="description" id="metaDesc" content="">
+<meta name="keywords" id="metaKeywords">
+<link rel="canonical" id="canonicalLink">
 
 <style>
 body{
@@ -13,7 +18,7 @@ body{
 }
 
 .card{
-  max-width:500px;
+  max-width:600px;
   margin:auto;
   background:#fff;
   padding:20px;
@@ -29,14 +34,25 @@ button{
   border-radius:6px;
   cursor:pointer;
 }
+
+h1{color:#1e3a6d}
 </style>
 </head>
 
 <body>
 
 <div class="card">
+
+  <h1 id="noteTitle">Loading...</h1>
+
+  <p id="noteDesc"></p>
+
   <h3>Note Details</h3>
-  <div id="note">Loading...</div>
+  <div id="note"></div>
+
+  <h3>About this Note</h3>
+  <p id="extraContent"></p>
+
 </div>
 
 <script>
@@ -47,6 +63,7 @@ const id = new URLSearchParams(location.search).get("id");
 if (!id) {
   noteEl.innerHTML = "<p>Invalid note link</p>";
 } else {
+
   fetch("https://enginotes-backend.onrender.com/note/" + id)
     .then(res => res.json())
     .then(n => {
@@ -62,9 +79,40 @@ if (!id) {
         return;
       }
 
+      // ================= SEO =================
+      const title = `${n.subject} Notes (${n.branch} Sem ${n.semester}) - Free PDF | EngiNotes`;
+
+      document.title = title;
+      document.getElementById("pageTitle").innerText = title;
+
+      document.getElementById("metaDesc").setAttribute(
+        "content",
+        `Download ${n.subject} notes for ${n.branch} semester ${n.semester}. Free engineering study material from EngiNotes.`
+      );
+
+      document.getElementById("metaKeywords").setAttribute(
+        "content",
+        `${n.subject} notes, ${n.branch} notes, semester ${n.semester}, engineering notes`
+      );
+
+      document.getElementById("canonicalLink").setAttribute(
+        "href",
+        `https://enginotes.in/note.html?id=${n._id}`
+      );
+
+      // ================= CONTENT =================
+      document.getElementById("noteTitle").innerText =
+        `${n.subject} Notes (${n.branch} Sem ${n.semester})`;
+
+      document.getElementById("noteDesc").innerText =
+        `These ${n.subject} notes are designed for ${n.branch} students in semester ${n.semester}. Use these notes to prepare for exams and understand key concepts easily.`;
+
+      document.getElementById("extraContent").innerText =
+        `${n.subject} is an important subject in ${n.branch}. These notes include important topics, explanations, and exam preparation material. Students can use this resource to improve their understanding and score better in exams.`;
+
       noteEl.innerHTML = `
-        <h4>${n.subject || "Untitled Note"}</h4>
-        <p>${n.branch} • Sem ${n.semester}</p>
+        <p><strong>Branch:</strong> ${n.branch}</p>
+        <p><strong>Semester:</strong> ${n.semester}</p>
 
         <p style="color:#555;font-size:14px;">
         This file is hosted on Google Drive. EngiNotes does not host files directly.
@@ -74,6 +122,7 @@ if (!id) {
           Open Notes
         </button>
       `;
+
     })
     .catch(() => {
       noteEl.innerHTML = "<p>Error loading note</p>";
@@ -82,7 +131,6 @@ if (!id) {
 
 // 🔥 open with tracking
 function openNote(link, id){
-
   fetch("https://enginotes-backend.onrender.com/download/" + id, {
     method: "POST"
   });
